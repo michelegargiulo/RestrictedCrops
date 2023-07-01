@@ -23,5 +23,5 @@ The mod is a continuation for Minecraft 1.12.2, increasing performance, control 
 
 # Ok, but why?
 Two reasons:
-- Growing cactuses in a snowy mountaintop makes no sense
+- Growing Cacti in a snowy mountaintop makes no sense
 - Encourages players to build decentralized farms, forcing them to spread out their bases, connect them and transport resources from one to another
