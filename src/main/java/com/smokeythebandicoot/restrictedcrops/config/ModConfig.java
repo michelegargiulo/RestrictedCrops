@@ -182,6 +182,7 @@ public class ModConfig {
     }
 
     private static void reloadRules(String[] rawRules) {
+        cropRules.clear();
         for (String s : rawRules) {
             String[] expression = s.split("=");
             if (expression.length != 2) {
