@@ -28,14 +28,15 @@ public class GrowthHandler {
         IBlockState state = world.getBlockState(pos);
         Block block = state.getBlock();
 
-        String crop = String.format("%s:%s", state.getBlock().getRegistryName().toString(), block.getMetaFromState(state));
+        String crop = state.getBlock().getRegistryName().toString();
+        String cropMeta = String.valueOf(block.getMetaFromState(state));
         String biome = world.getBiome(pos).getRegistryName().toString();
         int dim = world.provider.getDimension();
 
         if (ModConfig.logBonemeal) RestrictedCrops.logger.info(String.format("Caught BONEMEAL event of block state %s in biome %s in dim %s", crop, biome, dim));
         if (ModConfig.bonemealDebug) event.getEntityPlayer().sendMessage(new TextComponentString(String.format("Caught BONEMEAL event of block state %s in biome %s in dim %s", crop, biome, dim)));
 
-        boolean isAllowed = evaluateRule(crop, biome, dim);
+        boolean isAllowed = evaluateRule(crop, cropMeta, biome, dim);
         if (ModConfig.bonemealDebug) RestrictedCrops.logger.info("Result of bonemeal event: " + isAllowed);
         if (!isAllowed) {
             // If allowed, send a chat message explaining that the bonemeal cannot be applied to the plant
@@ -56,12 +57,15 @@ public class GrowthHandler {
         IBlockState state = world.getBlockState(pos);
         Block block = state.getBlock();
 
-        String crop = String.format("%s:%s", state.getBlock().getRegistryName().toString(), block.getMetaFromState(state));
+        String crop = state.getBlock().getRegistryName().toString();
+        String cropMeta = String.valueOf(block.getMetaFromState(state));
         String biome = world.getBiome(pos).getRegistryName().toString();
         int dim = world.provider.getDimension();
 
-        if (ModConfig.logCrops) RestrictedCrops.logger.info(String.format("Caught CROP GROWTH of block state %s in biome %s in dim %s", crop, biome, dim));
-        if (!evaluateRule(crop, biome, dim)) {
+        if (ModConfig.logCrops)
+            RestrictedCrops.logger.info(String.format("Caught CROP GROWTH of block state %s in biome %s in dim %s", crop, biome, dim));
+
+        if (!evaluateRule(crop, cropMeta, biome, dim)) {
             if (ModConfig.logCrops) RestrictedCrops.logger.info("Canceled CROP GROWHT event");
             try {
                 if (block == Blocks.CHORUS_PLANT) {
@@ -71,7 +75,9 @@ public class GrowthHandler {
                     }
                 }
                 event.setResult(Result.DENY);
-                if (ModConfig.dropBlockOnDeny) {
+                if (ModConfig.deadBushOnDeath.contains(crop)) {
+                    world.setBlockState(pos, Blocks.DEADBUSH.getDefaultState());
+                } else if (ModConfig.dropBlockOnDeny) {
                     world.destroyBlock(pos, true);
                 }
             }
@@ -89,17 +95,20 @@ public class GrowthHandler {
         IBlockState state = world.getBlockState(pos);
         Block block = world.getBlockState(pos).getBlock();
 
-        String sapling = String.format("%s:%s", state.getBlock().getRegistryName().toString(), block.getMetaFromState(state));
+        String sapling = state.getBlock().getRegistryName().toString();
+        String saplingMeta = String.valueOf(block.getMetaFromState(state));
         String biome = world.getBiome(pos).getRegistryName().toString();
         int dim = world.provider.getDimension();
 
         if (ModConfig.logSaplings) RestrictedCrops.logger.info(String.format("Caught SAPLING GROWTH of block state %s in biome %s in dim %s", sapling, biome, dim));
 
-        if (!evaluateRule(sapling, biome, dim)) {
+        if (!evaluateRule(sapling, saplingMeta, biome, dim)) {
             if (ModConfig.logSaplings) RestrictedCrops.logger.info("Canceled SAPLING GROWHT event");
             try {
                 event.setResult(Result.DENY);
-                if (ModConfig.dropBlockOnDeny) {
+                if (ModConfig.deadBushOnDeath.contains(sapling)) {
+                    world.setBlockState(pos, Blocks.DEADBUSH.getDefaultState());
+                } else if (ModConfig.dropBlockOnDeny) {
                     world.destroyBlock(pos, true);
                     world.setBlockState(pos, Blocks.AIR.getDefaultState());
                 }
@@ -110,30 +119,34 @@ public class GrowthHandler {
         }
     }
 
-    public boolean evaluateRule(String fullState, String biome, int dim) {
+    public boolean evaluateRule(String blockRegistryName, String blockMeta, String biome, int dim) {
 
-        String[] splits = fullState.split(":");
-        String regName = splits[0] + ":" + splits[1];
+        String fullstate = blockRegistryName + ":" + blockMeta;
         boolean wildcardMeta = false;
 
         // Does the state have any rules associated with it? If no rules, then -> allowed
-        if (!ModConfig.cropRules.containsKey(fullState)) {
-            if (ModConfig.logRuleEvaluation) RestrictedCrops.logger.log(Level.INFO, String.format(
+        if (!ModConfig.cropRules.containsKey(blockRegistryName + ":" + blockMeta)) {
+            if (ModConfig.logRuleEvaluation) {
+                RestrictedCrops.logger.log(Level.INFO, String.format(
                     "Crop has no rules, so %s is allowed to grow in Biome %s, Dimension %s. " +
-                            "Checking for wildcard meta as a fallback", fullState, biome, dim));
-            if (!ModConfig.cropRules.containsKey(regName)) {
-                if (ModConfig.logRuleEvaluation) RestrictedCrops.logger.log(Level.INFO, String.format("Crop has no rules, so %s is allowed to grow in Biome %s, Dimension %s", regName, biome, dim));
+                    "Checking for wildcard meta as a fallback", fullstate, biome, dim));
+            }
+
+            if (!ModConfig.cropRules.containsKey(blockRegistryName)) {
+                if (ModConfig.logRuleEvaluation) {
+                    RestrictedCrops.logger.log(Level.INFO, String.format("Crop has no rules, so %s is allowed to grow in Biome %s, Dimension %s", blockRegistryName, biome, dim));
+                }
                 return true;
             }
             wildcardMeta = true;
         }
 
         // There are rules associated. Can the crop grow?
-        if (ModConfig.cropRules.get(wildcardMeta ? regName : fullState).canGrowIn(biome, dim)) {
-            if (ModConfig.logRuleEvaluation) RestrictedCrops.logger.log(Level.INFO, String.format("Crop %s is allowed to grow in Biome %s, Dimension %s", wildcardMeta ? regName : fullState, biome, dim));
+        if (ModConfig.cropRules.get(wildcardMeta ? blockRegistryName : fullstate).canGrowIn(biome, dim)) {
+            if (ModConfig.logRuleEvaluation) RestrictedCrops.logger.log(Level.INFO, String.format("Crop %s is allowed to grow in Biome %s, Dimension %s", wildcardMeta ? blockRegistryName : fullstate, biome, dim));
             return true;
         }
-        if (ModConfig.logRuleEvaluation) RestrictedCrops.logger.log(Level.INFO, String.format("Crop %s is NOT allowed to grow in Biome %s, Dimension %s", wildcardMeta ? regName : fullState, biome, dim));
+        if (ModConfig.logRuleEvaluation) RestrictedCrops.logger.log(Level.INFO, String.format("Crop %s is NOT allowed to grow in Biome %s, Dimension %s", wildcardMeta ? blockRegistryName : fullstate, biome, dim));
         return false;
     }
 }

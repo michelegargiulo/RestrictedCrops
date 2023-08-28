@@ -21,9 +21,10 @@ import java.util.concurrent.ConcurrentHashMap;
         modid = RestrictedCrops.MODID,
         version = RestrictedCrops.MODVERSION,
         name = RestrictedCrops.MODNAME,
-        useMetadata = true,
+        useMetadata = true
         //dependencies = "after:openterraingenerator",
-        guiFactory = "com.smokeythebandicoot." + RestrictedCrops.MODID + ".config.ConfigGuiFactory")
+        //guiFactory = "com.smokeythebandicoot." + RestrictedCrops.MODID + ".config.ConfigGuiFactory"
+)
 public class RestrictedCrops {
 
     public static final String MODID = "restrictedcrops";
@@ -53,7 +54,7 @@ public class RestrictedCrops {
         event.getModMetadata().url = MODURL;
         event.getModMetadata().logoFile = MODLOGO;
 
-        ModConfig.initConfigFile(event);
+        // ModConfig.initConfigFile(event);
 
         GrowthHandler grower = new GrowthHandler();
         MinecraftForge.TERRAIN_GEN_BUS.register(grower);
@@ -101,14 +102,6 @@ public class RestrictedCrops {
                         "saplings might grow outside of predefined rules!");
                 logger.error(ex.toString());
             }
-        }
-    }
-
-    @SubscribeEvent
-    public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-        if(eventArgs.getModID().equals(RestrictedCrops.MODID)) {
-            ModConfig.config.save();
-            ModConfig.syncConfig();
         }
     }
 }
