@@ -1,7 +1,7 @@
 package com.smokeythebandicoot.restrictedcrops.config;
 
 import com.smokeythebandicoot.restrictedcrops.RestrictedCrops;
-import com.smokeythebandicoot.restrictedcrops.growthrules.CropGrowthRule;
+import com.smokeythebandicoot.restrictedcrops.growthrules.BiomeNameCropGrowthRule;
 import com.smokeythebandicoot.restrictedcrops.growthrules.CropGrowthRuleCollection;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
@@ -21,68 +21,68 @@ public class ModConfig {
 
     @Config.Ignore
     static CropGrowthRuleCollection plainsGroup = new CropGrowthRuleCollection(
-            new CropGrowthRule("minecraft:plains", 0),
-            new CropGrowthRule("minecraft:swampland", 0),
-            new CropGrowthRule("minecraft:ocean", 0),
-            new CropGrowthRule("minecraft:deep_ocean", 0),
-            new CropGrowthRule("minecraft:river", 0));
+            new BiomeNameCropGrowthRule("minecraft:plains", 0),
+            new BiomeNameCropGrowthRule("minecraft:swampland", 0),
+            new BiomeNameCropGrowthRule("minecraft:ocean", 0),
+            new BiomeNameCropGrowthRule("minecraft:deep_ocean", 0),
+            new BiomeNameCropGrowthRule("minecraft:river", 0));
 
     @Config.Ignore
     static CropGrowthRuleCollection desertGroup = new CropGrowthRuleCollection(
-            new CropGrowthRule("minecraft:savanna", 0),
-            new CropGrowthRule("minecraft:savanna_rock", 0),
-            new CropGrowthRule("minecraft:mesa", 0),
-            new CropGrowthRule("minecraft:mesa_rock", 0),
-            new CropGrowthRule("minecraft:mesa_clear_rock", 0),
-            new CropGrowthRule("minecraft:desert", 0),
-            new CropGrowthRule("minecraft:desert_hills", 0));
+            new BiomeNameCropGrowthRule("minecraft:savanna", 0),
+            new BiomeNameCropGrowthRule("minecraft:savanna_rock", 0),
+            new BiomeNameCropGrowthRule("minecraft:mesa", 0),
+            new BiomeNameCropGrowthRule("minecraft:mesa_rock", 0),
+            new BiomeNameCropGrowthRule("minecraft:mesa_clear_rock", 0),
+            new BiomeNameCropGrowthRule("minecraft:desert", 0),
+            new BiomeNameCropGrowthRule("minecraft:desert_hills", 0));
 
     @Config.Ignore
     static CropGrowthRuleCollection frozenGroup = new CropGrowthRuleCollection(
-            new CropGrowthRule("minecraft:taiga_cold", 0),
-            new CropGrowthRule("minecraft:taiga_cold_hills", 0),
-            new CropGrowthRule("minecraft:ice_flats", 0),
-            new CropGrowthRule("minecraft:ice_mountains", 0),
-            new CropGrowthRule("minecraft:frozen_river", 0),
-            new CropGrowthRule("minecraft:frozen_ocean", 0),
-            new CropGrowthRule("minecraft:cold_beach", 0));
+            new BiomeNameCropGrowthRule("minecraft:taiga_cold", 0),
+            new BiomeNameCropGrowthRule("minecraft:taiga_cold_hills", 0),
+            new BiomeNameCropGrowthRule("minecraft:ice_flats", 0),
+            new BiomeNameCropGrowthRule("minecraft:ice_mountains", 0),
+            new BiomeNameCropGrowthRule("minecraft:frozen_river", 0),
+            new BiomeNameCropGrowthRule("minecraft:frozen_ocean", 0),
+            new BiomeNameCropGrowthRule("minecraft:cold_beach", 0));
 
     @Config.Ignore
     static CropGrowthRuleCollection jungleGroup = new CropGrowthRuleCollection(
-            new CropGrowthRule("minecraft:jungle", 0),
-            new CropGrowthRule("minecraft:jungle_hills", 0),
-            new CropGrowthRule("minecraft:jungle_edge", 0),
-            new CropGrowthRule("minecraft:beaches", 0),
-            new CropGrowthRule("minecraft:stone_beach", 0));
+            new BiomeNameCropGrowthRule("minecraft:jungle", 0),
+            new BiomeNameCropGrowthRule("minecraft:jungle_hills", 0),
+            new BiomeNameCropGrowthRule("minecraft:jungle_edge", 0),
+            new BiomeNameCropGrowthRule("minecraft:beaches", 0),
+            new BiomeNameCropGrowthRule("minecraft:stone_beach", 0));
 
     @Config.Ignore
     static CropGrowthRuleCollection forestGroup = new CropGrowthRuleCollection(
-            new CropGrowthRule("minecraft:forest", 0),
-            new CropGrowthRule("minecraft:forest_hills", 0),
-            new CropGrowthRule("minecraft:birch_forest", 0),
-            new CropGrowthRule("minecraft:birch_forest_hills", 0),
-            new CropGrowthRule("minecraft:redwood_taiga", 0),
-            new CropGrowthRule("minecraft:redwood_taiga_hills", 0),
-            new CropGrowthRule("minecraft:roofed_forest", 0));
+            new BiomeNameCropGrowthRule("minecraft:forest", 0),
+            new BiomeNameCropGrowthRule("minecraft:forest_hills", 0),
+            new BiomeNameCropGrowthRule("minecraft:birch_forest", 0),
+            new BiomeNameCropGrowthRule("minecraft:birch_forest_hills", 0),
+            new BiomeNameCropGrowthRule("minecraft:redwood_taiga", 0),
+            new BiomeNameCropGrowthRule("minecraft:redwood_taiga_hills", 0),
+            new BiomeNameCropGrowthRule("minecraft:roofed_forest", 0));
 
     @Config.Ignore
     static CropGrowthRuleCollection shroomGroup = new CropGrowthRuleCollection(
-            new CropGrowthRule("minecraft:mushroom_island", 0),
-            new CropGrowthRule("minecraft:mushroom_island_shore", 0));
+            new BiomeNameCropGrowthRule("minecraft:mushroom_island", 0),
+            new BiomeNameCropGrowthRule("minecraft:mushroom_island_shore", 0));
 
     @Config.Ignore
     static CropGrowthRuleCollection mountsGroup = new CropGrowthRuleCollection(
-            new CropGrowthRule("minecraft:smaller_extreme_hills", 0),
-            new CropGrowthRule("minecraft:extreme_hills_with_trees", 0),
-            new CropGrowthRule("minecraft:extreme_hills", 0));
+            new BiomeNameCropGrowthRule("minecraft:smaller_extreme_hills", 0),
+            new BiomeNameCropGrowthRule("minecraft:extreme_hills_with_trees", 0),
+            new BiomeNameCropGrowthRule("minecraft:extreme_hills", 0));
 
     @Config.Ignore
     static CropGrowthRuleCollection netherGroup = new CropGrowthRuleCollection(
-            new CropGrowthRule("minecraft:hell", -1));
+            new BiomeNameCropGrowthRule("minecraft:hell", -1));
 
     @Config.Ignore
     static CropGrowthRuleCollection theendGroup = new CropGrowthRuleCollection(
-            new CropGrowthRule("minecraft:sky", 1));
+            new BiomeNameCropGrowthRule("minecraft:sky", 1));
 
 
     // Config options

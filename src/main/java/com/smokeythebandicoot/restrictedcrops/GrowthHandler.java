@@ -8,6 +8,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.event.entity.player.BonemealEvent;
 import net.minecraftforge.event.terraingen.SaplingGrowTreeEvent;
 import net.minecraftforge.event.world.BlockEvent.CropGrowEvent;
@@ -30,7 +31,7 @@ public class GrowthHandler {
 
         String crop = state.getBlock().getRegistryName().toString();
         String cropMeta = String.valueOf(block.getMetaFromState(state));
-        String biome = world.getBiome(pos).getRegistryName().toString();
+        Biome biome = world.getBiome(pos);
         int dim = world.provider.getDimension();
 
         if (ModConfig.logBonemeal) RestrictedCrops.logger.info(String.format("Caught BONEMEAL event of block state %s in biome %s in dim %s", crop, biome, dim));
@@ -59,7 +60,7 @@ public class GrowthHandler {
 
         String crop = state.getBlock().getRegistryName().toString();
         String cropMeta = String.valueOf(block.getMetaFromState(state));
-        String biome = world.getBiome(pos).getRegistryName().toString();
+        Biome biome = world.getBiome(pos);
         int dim = world.provider.getDimension();
 
         if (ModConfig.logCrops)
@@ -97,13 +98,15 @@ public class GrowthHandler {
 
         String sapling = state.getBlock().getRegistryName().toString();
         String saplingMeta = String.valueOf(block.getMetaFromState(state));
-        String biome = world.getBiome(pos).getRegistryName().toString();
+        Biome biome = world.getBiome(pos);
         int dim = world.provider.getDimension();
 
-        if (ModConfig.logSaplings) RestrictedCrops.logger.info(String.format("Caught SAPLING GROWTH of block state %s in biome %s in dim %s", sapling, biome, dim));
+        if (ModConfig.logSaplings)
+            RestrictedCrops.logger.info(String.format("Caught SAPLING GROWTH of block state %s in biome %s in dim %s", sapling, biome, dim));
 
         if (!evaluateRule(sapling, saplingMeta, biome, dim)) {
-            if (ModConfig.logSaplings) RestrictedCrops.logger.info("Canceled SAPLING GROWHT event");
+            if (ModConfig.logSaplings)
+                RestrictedCrops.logger.info("Canceled SAPLING GROWHT event");
             try {
                 event.setResult(Result.DENY);
                 if (ModConfig.deadBushOnDeath.contains(sapling)) {
@@ -119,8 +122,9 @@ public class GrowthHandler {
         }
     }
 
-    public boolean evaluateRule(String blockRegistryName, String blockMeta, String biome, int dim) {
+    public boolean evaluateRule(String blockRegistryName, String blockMeta, Biome biome, int dim) {
 
+        String biomeRegName = biome.getRegistryName().toString();
         String fullstate = blockRegistryName + ":" + blockMeta;
         boolean wildcardMeta = false;
 
@@ -129,12 +133,12 @@ public class GrowthHandler {
             if (ModConfig.logRuleEvaluation) {
                 RestrictedCrops.logger.log(Level.INFO, String.format(
                     "Crop has no rules, so %s is allowed to grow in Biome %s, Dimension %s. " +
-                    "Checking for wildcard meta as a fallback", fullstate, biome, dim));
+                    "Checking for wildcard meta as a fallback", fullstate, biomeRegName, dim));
             }
 
             if (!ModConfig.cropRules.containsKey(blockRegistryName)) {
                 if (ModConfig.logRuleEvaluation) {
-                    RestrictedCrops.logger.log(Level.INFO, String.format("Crop has no rules, so %s is allowed to grow in Biome %s, Dimension %s", blockRegistryName, biome, dim));
+                    RestrictedCrops.logger.log(Level.INFO, String.format("Crop has no rules, so %s is allowed to grow in Biome %s, Dimension %s", blockRegistryName, biomeRegName, dim));
                 }
                 return true;
             }

@@ -1,44 +1,42 @@
 package com.smokeythebandicoot.restrictedcrops.growthrules;
 
 import com.smokeythebandicoot.restrictedcrops.RestrictedCrops;
+import net.minecraft.world.biome.Biome;
 import org.apache.logging.log4j.Level;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 
 public class CropGrowthRuleCollection {
 
-    private HashSet<CropGrowthRule> growthRules;
+    private HashSet<ICropGrowthRule> growthRules;
 
-    public CropGrowthRuleCollection(HashSet<CropGrowthRule> growthRules) {
+    public CropGrowthRuleCollection(HashSet<ICropGrowthRule> growthRules) {
         this.growthRules = growthRules;
     }
 
     public CropGrowthRuleCollection() {
-        this.growthRules = new HashSet<CropGrowthRule>();
+        this.growthRules = new HashSet<ICropGrowthRule>();
     }
 
-    public CropGrowthRuleCollection(CropGrowthRule...rules) {
+    public CropGrowthRuleCollection(ICropGrowthRule...rules) {
         this.growthRules = new HashSet<>();
-        for (CropGrowthRule rule : rules) {
-            growthRules.add(rule);
-        }
+        growthRules.addAll(Arrays.asList(rules));
     }
 
-    public CropGrowthRuleCollection appendRule(CropGrowthRule rule) {
+    public CropGrowthRuleCollection appendRule(ICropGrowthRule rule) {
         growthRules.add(rule);
         return this;
     }
 
     public CropGrowthRuleCollection appendRules(CropGrowthRuleCollection ruleCollection) {
-        for (CropGrowthRule rule : ruleCollection.growthRules) {
-            growthRules.add(rule);
-        }
+        growthRules.addAll(ruleCollection.growthRules);
         return this;
     }
 
-    public boolean canGrowIn(String biome, int dimension) {
-        for (CropGrowthRule rule : growthRules) {
+    public boolean canGrowIn(Biome biome, int dimension) {
+        for (ICropGrowthRule rule : growthRules) {
             if (rule == null || rule.canGrowIn(biome, dimension)) return true;
         }
         return false;
@@ -47,9 +45,9 @@ public class CropGrowthRuleCollection {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        Iterator<CropGrowthRule> iterator = growthRules.iterator();
+        Iterator<ICropGrowthRule> iterator = growthRules.iterator();
         while (iterator.hasNext()) {
-            CropGrowthRule rule = iterator.next();
+            ICropGrowthRule rule = iterator.next();
             sb.append(rule.toString()).append(iterator.hasNext() ? "," : "");
         }
         return sb.toString();
@@ -60,14 +58,17 @@ public class CropGrowthRuleCollection {
         CropGrowthRuleCollection growthRules = new CropGrowthRuleCollection();
 
         String[] splits = source.split(",");
-        if (splits.length == 0) {
-            return growthRules;
-        }
 
         for (String split : splits) {
             if (split.isEmpty()) continue; // Ignore empty rules
-            CropGrowthRule rule = CropGrowthRule.parse(split);
-            if (rule == null) {
+
+            // Decide if the split has to be parsed into a BiomeName Rule or BiomeTag Rule
+            ICropGrowthRule rule;
+            if (source.startsWith("tag:"))
+                rule = new BiomeTagGrowthRule(split);
+            else
+                rule = new BiomeNameCropGrowthRule(split);
+            if (!rule.isValid()) {
                 RestrictedCrops.logger.log(Level.WARN, "Cannot parse rule: " + split);
                 continue;
             }

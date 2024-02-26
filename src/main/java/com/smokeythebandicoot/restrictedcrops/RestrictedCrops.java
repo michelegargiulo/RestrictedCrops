@@ -1,6 +1,7 @@
 package com.smokeythebandicoot.restrictedcrops;
 
 import com.smokeythebandicoot.restrictedcrops.config.ModConfig;
+import net.minecraft.init.Blocks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Loader;
@@ -11,6 +12,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.IEventListener;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Field;
@@ -29,7 +31,7 @@ public class RestrictedCrops {
 
     public static final String MODID = "restrictedcrops";
     public static final String MODNAME = "Restricted Crops";
-    public static final String MODVERSION = "1.2";
+    public static final String MODVERSION = "1.3";
     public static final String MODDESCRIPTION = "A Mod that limits where ICropGrow and ISaplingGrow events occur, based on biome and dimension. Also affects bonemealing.";
     public static final String MODAUTHOR = "SmokeyTheBandicoot";
     public static final String MODCREDITS = "Lothrazar, for the original idea";
@@ -54,12 +56,10 @@ public class RestrictedCrops {
         event.getModMetadata().url = MODURL;
         event.getModMetadata().logoFile = MODLOGO;
 
-        // ModConfig.initConfigFile(event);
-
         GrowthHandler grower = new GrowthHandler();
-        MinecraftForge.TERRAIN_GEN_BUS.register(grower);
         MinecraftForge.EVENT_BUS.register(grower);
         MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.TERRAIN_GEN_BUS.register(grower);
     }
 
     @EventHandler
