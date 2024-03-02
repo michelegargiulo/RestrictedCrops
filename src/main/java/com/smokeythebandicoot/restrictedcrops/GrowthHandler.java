@@ -22,6 +22,8 @@ public class GrowthHandler {
     @SubscribeEvent
     public void onBoneMealEvent(BonemealEvent event) {
         World world = event.getWorld();
+        if (world.isRemote) return;
+
         BlockPos pos = event.getPos();
         if (pos == null || world.isAirBlock(pos)) {
             return;

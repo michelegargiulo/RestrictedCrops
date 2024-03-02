@@ -31,7 +31,7 @@ public class RestrictedCrops {
 
     public static final String MODID = "restrictedcrops";
     public static final String MODNAME = "Restricted Crops";
-    public static final String MODVERSION = "1.3";
+    public static final String MODVERSION = "1.4";
     public static final String MODDESCRIPTION = "A Mod that limits where ICropGrow and ISaplingGrow events occur, based on biome and dimension. Also affects bonemealing.";
     public static final String MODAUTHOR = "SmokeyTheBandicoot";
     public static final String MODCREDITS = "Lothrazar, for the original idea";
@@ -60,6 +60,8 @@ public class RestrictedCrops {
         MinecraftForge.EVENT_BUS.register(grower);
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.TERRAIN_GEN_BUS.register(grower);
+
+        ModConfig.ConfigSyncHandler.initRules();
     }
 
     @EventHandler

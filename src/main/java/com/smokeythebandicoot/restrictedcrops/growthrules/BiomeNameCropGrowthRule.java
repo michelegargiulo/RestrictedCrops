@@ -47,15 +47,15 @@ public class BiomeNameCropGrowthRule implements ICropGrowthRule {
 
             // Dimension is handled differently. Integer.parseInt throws exception if source
             // string is in an incorrect format
-            int dim = 0;
             try {
                 anyDim = ruleInfos[0].equals("*");
                 if (!anyDim)
-                    dim = Integer.parseInt(ruleInfos[0]);
+                    dimId = Integer.parseInt(ruleInfos[0]);
 
-                biomeRegName = ruleInfos[1];
-                dimId = dim;
                 anyBiome = ruleInfos[1].equals("*");
+                if (!anyBiome)
+                    biomeRegName = ruleInfos[1];
+
             } catch (Exception ex) {
                 RestrictedCrops.logger.log(Level.ERROR, String.format("Error while parsing rule: %s while processing source '%s'. Please fix your config", ex.toString(), source));
             }
@@ -106,6 +106,6 @@ public class BiomeNameCropGrowthRule implements ICropGrowthRule {
 
     @Override
     public boolean isValid() {
-        return (!anyBiome && !anyDimension) && (biomeRegistryName == null || dimensionID == null);
+        return (anyBiome || biomeRegistryName != null) || (anyDimension && dimensionID != null);
     }
 }

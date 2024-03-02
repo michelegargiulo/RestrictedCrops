@@ -64,7 +64,7 @@ public class CropGrowthRuleCollection {
 
             // Decide if the split has to be parsed into a BiomeName Rule or BiomeTag Rule
             ICropGrowthRule rule;
-            if (source.startsWith("tag:"))
+            if (source.contains("|tag:"))
                 rule = new BiomeTagGrowthRule(split);
             else
                 rule = new BiomeNameCropGrowthRule(split);

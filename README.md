@@ -4,11 +4,16 @@ This mod is a complete rewrite from scratch of the Biome Growth Controls mod (ht
 
 The mod is a continuation for Minecraft 1.12.2, increasing performance, control and functionality over the original mod.
 
+For an extensive guide on how to configure your rules, check the wiki at https://github.com/michelegargiulo/RestrictedCrops/wiki
+
 # Feature overview
 - Restricts crops to specific Biome/Dimension combinations
+- Supports both biome registry names and biome dictionary
+- Default configuration provided
 - Restricts Bonemealing on plants that cannot grow there
 - Sends chat messages in case  the player bonemeals a plant that cannot grow (configurable)
 - Destroys or drops crop and saplings (configurable)
+- Turns crops that cannot grow into dead bushes (experimental)
 - Comes with default config
 - In-game reloadable config
 - Compat with OTG (configurable)

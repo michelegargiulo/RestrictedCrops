@@ -7,6 +7,7 @@ import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.Level;
 
@@ -15,75 +16,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-@Config(modid = RestrictedCrops.MODID, name = "Restricted Crops Configuration")
+@Config(modid = RestrictedCrops.MODID, name = "restrictedcrops")
 @Mod.EventBusSubscriber(modid = RestrictedCrops.MODID)
 public class ModConfig {
-
-    @Config.Ignore
-    static CropGrowthRuleCollection plainsGroup = new CropGrowthRuleCollection(
-            new BiomeNameCropGrowthRule("minecraft:plains", 0),
-            new BiomeNameCropGrowthRule("minecraft:swampland", 0),
-            new BiomeNameCropGrowthRule("minecraft:ocean", 0),
-            new BiomeNameCropGrowthRule("minecraft:deep_ocean", 0),
-            new BiomeNameCropGrowthRule("minecraft:river", 0));
-
-    @Config.Ignore
-    static CropGrowthRuleCollection desertGroup = new CropGrowthRuleCollection(
-            new BiomeNameCropGrowthRule("minecraft:savanna", 0),
-            new BiomeNameCropGrowthRule("minecraft:savanna_rock", 0),
-            new BiomeNameCropGrowthRule("minecraft:mesa", 0),
-            new BiomeNameCropGrowthRule("minecraft:mesa_rock", 0),
-            new BiomeNameCropGrowthRule("minecraft:mesa_clear_rock", 0),
-            new BiomeNameCropGrowthRule("minecraft:desert", 0),
-            new BiomeNameCropGrowthRule("minecraft:desert_hills", 0));
-
-    @Config.Ignore
-    static CropGrowthRuleCollection frozenGroup = new CropGrowthRuleCollection(
-            new BiomeNameCropGrowthRule("minecraft:taiga_cold", 0),
-            new BiomeNameCropGrowthRule("minecraft:taiga_cold_hills", 0),
-            new BiomeNameCropGrowthRule("minecraft:ice_flats", 0),
-            new BiomeNameCropGrowthRule("minecraft:ice_mountains", 0),
-            new BiomeNameCropGrowthRule("minecraft:frozen_river", 0),
-            new BiomeNameCropGrowthRule("minecraft:frozen_ocean", 0),
-            new BiomeNameCropGrowthRule("minecraft:cold_beach", 0));
-
-    @Config.Ignore
-    static CropGrowthRuleCollection jungleGroup = new CropGrowthRuleCollection(
-            new BiomeNameCropGrowthRule("minecraft:jungle", 0),
-            new BiomeNameCropGrowthRule("minecraft:jungle_hills", 0),
-            new BiomeNameCropGrowthRule("minecraft:jungle_edge", 0),
-            new BiomeNameCropGrowthRule("minecraft:beaches", 0),
-            new BiomeNameCropGrowthRule("minecraft:stone_beach", 0));
-
-    @Config.Ignore
-    static CropGrowthRuleCollection forestGroup = new CropGrowthRuleCollection(
-            new BiomeNameCropGrowthRule("minecraft:forest", 0),
-            new BiomeNameCropGrowthRule("minecraft:forest_hills", 0),
-            new BiomeNameCropGrowthRule("minecraft:birch_forest", 0),
-            new BiomeNameCropGrowthRule("minecraft:birch_forest_hills", 0),
-            new BiomeNameCropGrowthRule("minecraft:redwood_taiga", 0),
-            new BiomeNameCropGrowthRule("minecraft:redwood_taiga_hills", 0),
-            new BiomeNameCropGrowthRule("minecraft:roofed_forest", 0));
-
-    @Config.Ignore
-    static CropGrowthRuleCollection shroomGroup = new CropGrowthRuleCollection(
-            new BiomeNameCropGrowthRule("minecraft:mushroom_island", 0),
-            new BiomeNameCropGrowthRule("minecraft:mushroom_island_shore", 0));
-
-    @Config.Ignore
-    static CropGrowthRuleCollection mountsGroup = new CropGrowthRuleCollection(
-            new BiomeNameCropGrowthRule("minecraft:smaller_extreme_hills", 0),
-            new BiomeNameCropGrowthRule("minecraft:extreme_hills_with_trees", 0),
-            new BiomeNameCropGrowthRule("minecraft:extreme_hills", 0));
-
-    @Config.Ignore
-    static CropGrowthRuleCollection netherGroup = new CropGrowthRuleCollection(
-            new BiomeNameCropGrowthRule("minecraft:hell", -1));
-
-    @Config.Ignore
-    static CropGrowthRuleCollection theendGroup = new CropGrowthRuleCollection(
-            new BiomeNameCropGrowthRule("minecraft:sky", 1));
-
 
     // Config options
     @Config.Ignore
@@ -123,49 +58,49 @@ public class ModConfig {
     @Config.Ignore
     public static String[] defaultRules = new String[] {
             // Crops
-            "minecraft:wheat=" + plainsGroup.appendRules(forestGroup).appendRules(jungleGroup).toString(),
-            "minecraft:potatoes=" + plainsGroup.appendRules(forestGroup).appendRules(jungleGroup).appendRules(mountsGroup).toString(),
-            "minecraft:carrots=" + plainsGroup.appendRules(forestGroup).appendRules(jungleGroup).toString(),
-            "minecraft:beetroots=" + plainsGroup.appendRules(forestGroup).appendRules(jungleGroup).toString(),
-            "minecraft:melon_stem=" + plainsGroup.appendRules(forestGroup).appendRules(jungleGroup).toString(),
-            "minecraft:pumkpin_stem=" + plainsGroup.appendRules(forestGroup).appendRules(jungleGroup).toString(),
+            "minecraft:wheat=*|tag:PLAINS,*|tag:FOREST",
+            "minecraft:potatoes=*|tag:PLAINS,*|tag:FOREST,*|tag:MOUNTAIN",
+            "minecraft:carrots=*|tag:PLAINS,*|tag:FOREST",
+            "minecraft:beetroots=*|tag:PLAINS,*|tag:FOREST",
+            "minecraft:melon_stem=*|tag:PLAINS,*|tag:FOREST,*|tag:JUNGLE",
+            "minecraft:pumkpin_stem=*|tag:PLAINS,*|tag:FOREST,*|tag:MOUNTAIN",
 
             // Beans
-            "minecraft:cocoa=" + jungleGroup.toString(),
+            "minecraft:cocoa=*|tag:JUNGLE",
 
             // Shrooms
-            "minecraft:brown_mushroom=" + shroomGroup.appendRules(plainsGroup).appendRules(forestGroup).appendRules(jungleGroup).appendRules(mountsGroup).toString(),
-            "minecraft:red_mushroom=" + shroomGroup.appendRules(plainsGroup).appendRules(forestGroup).appendRules(jungleGroup).appendRules(mountsGroup).toString(),
+            "minecraft:brown_mushroom=*|tag:MUSHROOM,*|tag:PLAINS,*|tag:FOREST,*|tag:JUNGLE,*|tag:MOUNTAIN",
+            "minecraft:red_mushroom=*|tag:MUSHROOM,*|tag:PLAINS,*|tag:FOREST,*|tag:JUNGLE,*|tag:MOUNTAIN",
 
             // Saplings - special case, as Meta also keeps track of growth stage
-            "minecraft:sapling:0=" + plainsGroup.appendRules(desertGroup).appendRules(jungleGroup).toString(),
-            "minecraft:sapling:8=" + plainsGroup.appendRules(desertGroup).appendRules(jungleGroup).toString(),
-            "minecraft:sapling:1=" + forestGroup.appendRules(frozenGroup).appendRules(mountsGroup).toString(),
-            "minecraft:sapling:9=" + forestGroup.appendRules(frozenGroup).appendRules(mountsGroup).toString(),
-            "minecraft:sapling:2=" + plainsGroup.appendRules(forestGroup).appendRules(mountsGroup).toString(),
-            "minecraft:sapling:10=" + plainsGroup.appendRules(forestGroup).appendRules(mountsGroup).toString(),
-            "minecraft:sapling:3=" + jungleGroup.appendRules(forestGroup).toString(),
-            "minecraft:sapling:11=" + jungleGroup.appendRules(forestGroup).toString(),
-            "minecraft:sapling:4=" + desertGroup.appendRules(plainsGroup).toString(),
-            "minecraft:sapling:12=" + desertGroup.appendRules(plainsGroup).toString(),
-            "minecraft:sapling:5=" + forestGroup.appendRules(plainsGroup).toString(),
-            "minecraft:sapling:13=" + forestGroup.appendRules(plainsGroup).toString(),
+            "minecraft:sapling:0=*|tag:PLAINS,*|tag:FOREST,*|tag:!COLD+!HOT",
+            "minecraft:sapling:8=*|tag:PLAINS,*|tag:FOREST,*|tag:!COLD+!HOT",
+            "minecraft:sapling:1=*|tag:FOREST,*|tag:COLD+!HOT",
+            "minecraft:sapling:9=*|tag:FOREST,*|tag:COLD+!HOT",
+            "minecraft:sapling:2=*|tag:PLAINS,*|tag:FOREST,*|tag:MOUNTAIN",
+            "minecraft:sapling:10=*|tag:PLAINS,*|tag:FOREST,*|tag:MOUNTAIN",
+            "minecraft:sapling:3=*|tag:JUNGLE+HOT+!DRY",
+            "minecraft:sapling:11=*|tag:JUNGLE+HOT+!DRY",
+            "minecraft:sapling:4=*|tag:DESERT,*|tag:HOT,*|tag:!WET",
+            "minecraft:sapling:12=*|tag:DESERT,*|tag:HOT,*|tag:!WET",
+            "minecraft:sapling:5=*|tag:PLAINS,*|tag:FOREST,*|tag:!COLD,*|tag:!HOT",
+            "minecraft:sapling:13=*|tag:PLAINS,*|tag:FOREST,*|tag:!COLD,*|tag:!HOT",
 
             // Special
-            "minecraft:cactus=" + desertGroup.toString(),
-            "minecraft:reeds=" + jungleGroup.appendRules(plainsGroup).toString(),
+            "minecraft:cactus=*|tag:DESERT,*|tag:HOT+DRY",
+            "minecraft:reeds=*|tag:WET",
 
             // Nether
-            "minecraft:nether_wart=" + netherGroup.toString(),
+            "minecraft:nether_wart=*|tag:NETHER",
 
             // The End
-            "minecraft:chorus_flower=" + theendGroup.toString(),
-            "minecraft:chorus_plant=" + theendGroup.toString(),
+            "minecraft:chorus_flower=*|tag:END",
+            "minecraft:chorus_plant=*|tag:END",
     };
 
     // RULES
     @Config.Comment("Crop Rules. Format is " +
-            "<modid>:<registry_name>:<meta>=ù" +
+            "<modid>:<registry_name>:<meta>=" +
             "[dimension1|biome1,dimension2|biome2, ... , dimensionN|biomeN]. " +
             "Visit Wiki at https://github.com/michelegargiulo/RestrictedCrops/wiki for more information")
     public static String[] rawRules = defaultRules;
@@ -198,6 +133,11 @@ public class ModConfig {
                 ConfigManager.sync(RestrictedCrops.MODID, Config.Type.INSTANCE);
                 reloadRules(rawRules);
             }
+        }
+
+        public static void initRules() {
+            ConfigManager.sync(RestrictedCrops.MODID, Config.Type.INSTANCE);
+            reloadRules(rawRules);
         }
     }
 
